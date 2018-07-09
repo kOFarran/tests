@@ -1,4 +1,5 @@
 <?php
+include 'config_db.php';
 
 function get_price($name)
 {
@@ -36,17 +37,65 @@ function get_text(){
 	<script>
 		$(document).ready(function(){
 			$('#save').on('click', function(){
-				$('#subject').append
+				upload();
 			})
 		})
 
+		function upload(){
+			var text = $('#subject').val();
+
+			var dataString = "text="+text
+
+			$.ajax({
+				type: "GET"
+				, url: "upload_api_test.php"
+				, data: dataString
+				, cache: false
+				, contentType: false
+				, processData: false
+				, success: function(data){
+					alert('success '+ data);
+				}
+				, error: function(data){
+					alert('Error '+data);
+				}
+			})
+
+		}
+		function addText(txt){
+			$('#subject').val(txt);
+		}
 	</script>
 </head>
 <body>
   <form name="form" action="" method="get">
   <textarea type="text" name="subject" id="subject">
-    This is text from the input new
   </textarea>
+	<div id="save" class="btn btn-success">Save</div>
+
 </form>
+<?php try{
+
+	$QueryIndexDetails = "SELECT MAX(update_text) FROM api_test2 WHERE deleted_date IS NULL;";
+
+	$ResultIndexDetails = $db->prepare($QueryIndexDetails);
+
+	$ExecIndexDetails = $ResultIndexDetails->execute();
+
+	foreach ($ResultIndexDetails as $RowIndexDetails) {
+	//	echo '<script type="text/javascript"> alert("foreachA"); </script>';
+		$databaseText = $RowIndexDetails['MAX(update_text)'];
+
+		//$databaseColor = ltrim($databaseColor, '#');
+
+		echo '<script type="text/javascript">addText("'.$databaseText.'");</script>';
+	}
+
+
+	}
+	catch(PDOException $e) {
+	echo $e->getMessage();
+	}
+	 ?>
 </body>
 </html>
