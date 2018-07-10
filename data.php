@@ -20,7 +20,7 @@ function get_price($name)
 }
 
 function get_text(){
-  $text = $_GET['subject'];
+  $text = $_POST['subject'];
   return $text;
 }
 
@@ -64,6 +64,7 @@ function get_text(){
 		}
 		function addText(txt){
 			$('#subject').val(txt);
+			$('#subject').html(txt);
 		}
 	</script>
 </head>

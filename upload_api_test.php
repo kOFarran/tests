@@ -27,27 +27,41 @@
 		/* DATETIME for date_created in MySQL */
     date_default_timezone_set('Europe/Dublin');
     $createdDate = date("Y-m-d H:i:s", time());
+    $input = 3;
 
              // Array for our insert
 		try{
-			             $query=array(':txt' => $text, ':createdDate' => $createdDate);
+			             $query=array(':txt' => $text, ':input'=> $input, ':modifiedDate' => $createdDate);
 
 			 					echo "1";
             // Prepare Statement
             // $stmt = $db->prepare("INSERT INTO api_test2
 						// 										(update_text, created_date)
 						// 										VALUES (:txt, :createdDate)");
-						$stmt = $db->prepare("/*IF NOT EXISTS (SELECT MAX(update_text) FROM api_test2
-																	                   WHERE deleted_date IS NULL AND MAX(update_text) = "Second")
-																	   BEGIN
-																	      INSERT INTO api_test2
-																	        (update_text, created_date)
-																	        VALUES ("Second", 2018/07/09)
-																	   END*/
 
-																	INSERT INTO api_test2
-																		SELECT MAX(update_text) FROM api_test2
-																	    WHERE NOT EXISTS(SELECT MAX(update_text) FROM api_test2 WHERE deleted_date IS NULL AND MAX(update_text) = "Second");");
+            /*
+            /*IF NOT EXISTS (SELECT MAX(update_text) FROM api_test2
+                   WHERE deleted_date IS NULL AND MAX(update_text) = "Second")
+   BEGIN
+      INSERT INTO api_test2
+        (update_text, created_date)
+        VALUES ("Second", 2018/07/09)
+   END*/
+
+/*INSERT INTO api_test2
+	SELECT MAX(update_text) FROM api_test2
+    WHERE NOT EXISTS(SELECT MAX(update_text) FROM api_test2 WHERE deleted_date IS NULL AND MAX(update_text) = "Second");
+
+    INSERT INTO api_test2(update_text)
+	VALUES ("Second")
+    WHERE NOT EXISTS(SELECT update_text FROM api_test2 WHERE deleted_date IS NULL AND update_text = "Second");
+
+            */
+
+						$stmt = $db->prepare("UPDATE api_test2
+    															SET update_text = COALESCE(:txt, update_text),
+  																			modified_date = COALESCE(:modifiedDate, modified_date)
+    															WHERE input_id = :input;");
 																echo "here4";
             // Execute Query
             $stmt->execute($query);
