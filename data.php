@@ -64,17 +64,12 @@ function get_text(){
 		}
 		function addText(txt){
 			$('#subject').val(txt);
-			$('#subject').html(txt);
+			// $('#subject').html(txt);
 		}
 	</script>
 </head>
 <body>
-  <form name="form" action="" method="get">
-  <textarea type="text" name="subject" id="subject">
-  </textarea>
-	<div id="save" class="btn btn-success">Save</div>
 
-</form>
 <?php try{
 
 	$QueryIndexDetails = "SELECT MAX(update_text) FROM api_test2 WHERE deleted_date IS NULL;";
@@ -86,7 +81,14 @@ function get_text(){
 	foreach ($ResultIndexDetails as $RowIndexDetails) {
 	//	echo '<script type="text/javascript"> alert("foreachA"); </script>';
 		$databaseText = $RowIndexDetails['MAX(update_text)'];
+		?>
+		<form name="form" action="" method="get">
+	  <textarea type="text" name="subject" id="subject"><?php echo $databaseText; ?>
+	  </textarea>
+		<div id="save" class="btn btn-success">Save</div>
 
+	</form>
+	<?php
 		//$databaseColor = ltrim($databaseColor, '#');
 
 		echo '<script type="text/javascript">addText("'.$databaseText.'");</script>';
